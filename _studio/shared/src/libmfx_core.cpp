@@ -1272,6 +1272,13 @@ mfxStatus CoreDoSWFastCopy(mfxFrameSurface1 *pDst, mfxFrameSurface1 *pSrc, int c
     uint32_t srcPitch = pSrc->Data.PitchLow + ((mfxU32)pSrc->Data.PitchHigh << 16);
     uint32_t dstPitch = pDst->Data.PitchLow + ((mfxU32)pDst->Data.PitchHigh << 16);
 
+    if (!dstPitch)
+    {
+        pDst->Data.PitchLow  = pSrc->Data.PitchLow;
+        pDst->Data.PitchHigh = pSrc->Data.PitchHigh;
+        dstPitch = srcPitch;
+    }
+
     switch (pDst->Info.FourCC)
     {
     case MFX_FOURCC_P010:

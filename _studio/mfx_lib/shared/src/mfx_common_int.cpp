@@ -450,6 +450,7 @@ mfxStatus CheckFramePointers(mfxFrameInfo const& info, mfxFrameData const& data)
         case MFX_FOURCC_Y210:        MFX_CHECK(data.Y16 && data.U16 && data.V16, MFX_ERR_UNDEFINED_BEHAVIOR); break;
 #endif
 
+        case MFX_FOURCC_YUY2:
         case MFX_FOURCC_P8:
         case MFX_FOURCC_P8_TEXTURE:
         case MFX_FOURCC_R16:         MFX_CHECK(data.Y, MFX_ERR_UNDEFINED_BEHAVIOR); break;
@@ -474,7 +475,7 @@ mfxStatus CheckFramePointers(mfxFrameInfo const& info, mfxFrameData const& data)
         case MFX_FOURCC_ABGR16:      MFX_CHECK(data.R && data.G && data.B && data.A, MFX_ERR_UNDEFINED_BEHAVIOR); break;
 
         case MFX_FOURCC_YV12:
-        case MFX_FOURCC_YUY2:
+        //case MFX_FOURCC_YUY2:
         default:                     MFX_CHECK(data.Y && data.U && data.V, MFX_ERR_UNDEFINED_BEHAVIOR); break;
     }
 
@@ -964,7 +965,8 @@ mfxStatus GetFramePointerChecked(mfxFrameInfo const& info, mfxFrameData const& d
     mfxStatus sts = CheckFramePointers(info, data);
     MFX_CHECK_STS(sts);
 
-    mfxU32 const pitch = (data.PitchHigh << 16) | data.PitchLow;
+    mfxU32 const pitch = info.Width * 2;
+    //mfxU32 const pitch = (data.PitchHigh << 16) | data.PitchLow;
     mfxU32 const min_pitch = GetMinPitch(info.FourCC, info.Width);
 
     return

@@ -1033,6 +1033,8 @@ VAAPIVideoCORE::DoFastCopyWrapper(
 
     sts = DoFastCopyExtended(&dstTempSurface, &srcTempSurface);
 
+    pDst->Data = dstTempSurface.Data;
+
     if (MFX_ERR_DEVICE_FAILED == sts && 0 != dstTempSurface.Data.Corrupted)
     {
         // complete task even if frame corrupted
@@ -1171,13 +1173,14 @@ VAAPIVideoCORE::DoFastCopyExtended(
 
                 {
                     MFX_AUTO_LTRACE(MFX_TRACE_LEVEL_HOTSPOTS, "FastCopy_vid2sys");
-                    mfxStatus sts = mfxDefaultAllocatorVAAPI::SetFrameData(va_image, pDst->Info.FourCC, (mfxU8*)pBits, &pSrc->Data);
+                    //mfxStatus sts = mfxDefaultAllocatorVAAPI::SetFrameData(va_image, pDst->Info.FourCC, (mfxU8*)pBits, &pSrc->Data);
+                    mfxStatus sts = mfxDefaultAllocatorVAAPI::SetFrameData(va_image, pDst->Info.FourCC, (mfxU8*)pBits, &pDst->Data);
                     MFX_CHECK_STS(sts);
 
                     mfxMemId saveMemId = pSrc->Data.MemId;
                     pSrc->Data.MemId = 0;
 
-                    sts = CoreDoSWFastCopy(pDst, pSrc, COPY_VIDEO_TO_SYS); // sw copy
+                    //sts = CoreDoSWFastCopy(pDst, pSrc, COPY_VIDEO_TO_SYS); // sw copy
                     MFX_CHECK_STS(sts);
 
                     pSrc->Data.MemId = saveMemId;
